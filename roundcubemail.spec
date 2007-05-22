@@ -5,7 +5,7 @@
 %define	version		0.1
 %define beta		rc1
 %if beta
-%define	release		%mkrel 0.%beta.1
+%define	release		%mkrel 0.%beta.2
 %else
 %define release		%mkrel 1
 %endif
@@ -53,7 +53,6 @@ interface is fully skinnable using XHTML and CSS 2.
 
 %install
 install -d -m 0755 $RPM_BUILD_ROOT%{basedir}
-rm -rf temp
 cp -a * $RPM_BUILD_ROOT%{basedir}/
 rm -f $RPM_BUILD_ROOT%{basedir}/CHANGELOG $RPM_BUILD_ROOT%{basedir}/INSTALL $RPM_BUILD_ROOT%{basedir}/UPGRADING $RPM_BUILD_ROOT%{basedir}/LICENSE $RPM_BUILD_ROOT%{basedir}/README
 cp -a config/db.inc.php.dist $RPM_BUILD_ROOT%{basedir}/config/db.inc.php
