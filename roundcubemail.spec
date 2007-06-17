@@ -5,7 +5,7 @@
 %define	version		0.1
 %define beta		rc1
 %if beta
-%define	release		%mkrel 0.%beta.2
+%define	release		%mkrel 0.%beta.3
 %else
 %define release		%mkrel 1
 %endif
@@ -25,14 +25,15 @@ Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}.tar.b
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
-BuildRequires:	apache-devel pcre-devel
+BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
 Requires:	php-gettext
 Requires:	php-iconv
 Requires:	php-mbstring
 Requires:	php-openssl
 Requires:	php-session
-
+Requires(post):   rpm-helper
+Requires(postun): rpm-helper
 
 %description
 RoundCube Webmail is a browser-based multilingual IMAP client with an 
@@ -52,11 +53,21 @@ interface is fully skinnable using XHTML and CSS 2.
 %build
 
 %install
-install -d -m 0755 $RPM_BUILD_ROOT%{basedir}
+rm -rf $RPM_BUILD_ROOT
+perl -pi -e 's,config/main.inc.php,%{_sysconfdir}/%{name}/main.inc.php,g' program/include/main.inc
+perl -pi -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/include/main.inc
+perl -pi -e 's,logs/,%{_logdir}/%{name}/,g' config/main.inc.php.dist
+perl -pi -e 's,temp/,/tmp/,g' config/main.inc.php.dist
+mkdir -p $RPM_BUILD_ROOT%{basedir}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
+mkdir -p $RPM_BUILD_ROOT%{_logdir}/%{name}
+cp -a config/db.inc.php.dist $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/db.inc.php
+cp -a config/main.inc.php.dist $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/main.inc.php
+rm -rf config
+rm -rf temp
+rm -rf logs
 cp -a * $RPM_BUILD_ROOT%{basedir}/
 rm -f $RPM_BUILD_ROOT%{basedir}/CHANGELOG $RPM_BUILD_ROOT%{basedir}/INSTALL $RPM_BUILD_ROOT%{basedir}/UPGRADING $RPM_BUILD_ROOT%{basedir}/LICENSE $RPM_BUILD_ROOT%{basedir}/README
-cp -a config/db.inc.php.dist $RPM_BUILD_ROOT%{basedir}/config/db.inc.php
-cp -a config/main.inc.php.dist $RPM_BUILD_ROOT%{basedir}/config/main.inc.php
 
 cat <<EOF > %{mod_conf}
 
@@ -70,32 +81,52 @@ Alias /%{name} %{basedir}
 
 EOF
 
+cat <<EOF > README.urpmi
+
+This package conforms to the Mandriva web applications policy:
+http://wiki.mandriva.com/Policies/Web_Applications
+
+It therefore differs from a standard installation in the following
+ways:
+
+* Logs are stored to /var/log/roundcubemail
+* Temporary files are placed in /tmp
+* Configuration files (main.inc.php and db.inc.php) are placed in
+  /etc/roundcubemail
+
+You will need to edit /etc/roundcubemail/main.inc.php and
+/etc/roundcubemail/db.inc.php appropriately for your site before you
+can use Roundcube. You must at least configure an appropriate mail
+server and port in main.inc.php, and change the 
+$rcmail_config['des_key'] setting. In db.inc.php you must configure
+an appropriate database location and user; in the most simple
+configuration, you would create a new user and database both named
+'roundcubemail' on a MySQL server running on the same machine, give
+the roundcubemail user full read/write access to the roundcubemail
+database, and set db.inc.php appropriately.
+
+EOF
+
 mkdir -p %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
 install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
 
 %post
-if [ -f /var/lock/subsys/httpd ]; then
-    %{_initrddir}/httpd restart 1>&2;
-fi
+%_post_webapp
 
 %postun
-if [ "$1" = "0" ]; then
-    if [ -f /var/lock/subsys/httpd ]; then
-	%{_initrddir}/httpd restart 1>&2
-    fi
-fi
+%_postun_webapp
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc %attr(-  root  root) CHANGELOG README
-%dir %{basedir}
-%dir %{basedir}/config
-%config(noreplace) %{basedir}/config/.htaccess
-%config(noreplace) %{basedir}/config/db.inc.php
-%config(noreplace) %{basedir}/config/main.inc.php
-%{basedir}/config/*.dist
-%{basedir}/[^c]*
+%doc %attr(-  root  root) CHANGELOG README README.urpmi
+%{basedir}
 %{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
+%dir %{_sysconfdir}/%{name}
+%defattr(0775,root,www)
+%{_logdir}/%{name}
+%defattr(0640,root,www)
+%config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
+%config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
