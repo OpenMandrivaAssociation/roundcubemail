@@ -56,9 +56,9 @@ The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %if %beta
-%setup -q -n %{name}-%{version}-%{beta}
+%setup -q -n %{name}-%{version}-%{beta}-dep
 %else
-%setup -q
+%setup -q -n %{name}-%{version}-dep
 %endif
 
 %build
