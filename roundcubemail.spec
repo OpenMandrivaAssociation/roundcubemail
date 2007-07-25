@@ -5,7 +5,7 @@
 %define	version		0.1
 %define beta		rc1
 %if beta
-%define	release		%mkrel 0.%beta.3
+%define	release		%mkrel 0.%beta.4
 %else
 %define release		%mkrel 1
 %endif
@@ -16,11 +16,14 @@ Name:		%{name}
 Version:	%{version}
 Release:	%{release}           
 Group:		System/Servers
-License:	GPL
+License:	GPLv2
+# Use the -dep tarballs. These use system copies of the PHP stuff
+# rather than including them, which is better for our purposes.
+# - AdamW 2007/07
 %if %beta
-Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-%{beta}.tar.bz2
+Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-%{beta}-dep.tar.gz
 %else
-Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}.tar.bz2
+Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-dep.tar.gz
 %endif
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -32,6 +35,14 @@ Requires:	php-iconv
 Requires:	php-mbstring
 Requires:	php-openssl
 Requires:	php-session
+Requires:	php-pear-DB_DataObject
+Requires:	php-pear-DB_DataObject_FormBuilder
+Requires:	php-pear-DB_NestedSet
+Requires:	php-pear-DB_Pager
+Requires:	php-pear-DB_QueryTool
+Requires:	php-pear-DB_Table
+Requires:	php-pear-Mail_Mime
+Requires:	php-pear-Net_SMTP
 Requires(post):   rpm-helper
 Requires(postun): rpm-helper
 
@@ -40,8 +51,8 @@ RoundCube Webmail is a browser-based multilingual IMAP client with an
 application-like user interface. It provides full functionality you 
 expect from an e-mail client, including MIME support, address book, 
 folder manipulation, message searching and spell checking. RoundCube 
-Webmail is written in PHP and requires the MySQL database. The user 
-interface is fully skinnable using XHTML and CSS 2.
+Webmail is written in PHP and requires a MySQL or PostgreSQL database.
+The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %if %beta
@@ -54,9 +65,12 @@ interface is fully skinnable using XHTML and CSS 2.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+# tell it that we're moving the configuration files
 perl -pi -e 's,config/main.inc.php,%{_sysconfdir}/%{name}/main.inc.php,g' program/include/main.inc
 perl -pi -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/include/main.inc
+# use systemwide log dir
 perl -pi -e 's,logs/,%{_logdir}/%{name}/,g' config/main.inc.php.dist
+# and temp dir
 perl -pi -e 's,temp/,/tmp/,g' config/main.inc.php.dist
 mkdir -p $RPM_BUILD_ROOT%{basedir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
