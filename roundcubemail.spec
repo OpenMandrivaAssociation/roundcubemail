@@ -3,9 +3,9 @@
 
 %define	name		roundcubemail
 %define	version		0.1
-%define beta		rc1
+%define beta		rc2
 %if beta
-%define	release		%mkrel 0.%beta.4
+%define	release		%mkrel 0.%beta.1
 %else
 %define release		%mkrel 1
 %endif
@@ -28,19 +28,14 @@ Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-dep.t
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
-BuildRequires:	apache-devel pcre-devel rpm-helper
+#BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
 Requires:	php-gettext
 Requires:	php-iconv
 Requires:	php-mbstring
 Requires:	php-openssl
 Requires:	php-session
-Requires:	php-pear-DB_DataObject
-Requires:	php-pear-DB_DataObject_FormBuilder
-Requires:	php-pear-DB_NestedSet
-Requires:	php-pear-DB_Pager
-Requires:	php-pear-DB_QueryTool
-Requires:	php-pear-DB_Table
+Requires:	php-pear-DB
 Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
 Requires(post):   rpm-helper
@@ -64,7 +59,7 @@ The user interface is fully skinnable using XHTML and CSS 2.
 %build
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 # tell it that we're moving the configuration files
 perl -pi -e 's,config/main.inc.php,%{_sysconfdir}/%{name}/main.inc.php,g' program/include/main.inc
 perl -pi -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/include/main.inc
@@ -72,16 +67,16 @@ perl -pi -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/in
 perl -pi -e 's,logs/,%{_logdir}/%{name}/,g' config/main.inc.php.dist
 # and temp dir
 perl -pi -e 's,temp/,/tmp/,g' config/main.inc.php.dist
-mkdir -p $RPM_BUILD_ROOT%{basedir}
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
-mkdir -p $RPM_BUILD_ROOT%{_logdir}/%{name}
-cp -a config/db.inc.php.dist $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/db.inc.php
-cp -a config/main.inc.php.dist $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/main.inc.php
+mkdir -p %{buildroot}%{basedir}
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}
+mkdir -p %{buildroot}%{_logdir}/%{name}
+cp -a config/db.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/db.inc.php
+cp -a config/main.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/main.inc.php
 rm -rf config
 rm -rf temp
 rm -rf logs
-cp -a * $RPM_BUILD_ROOT%{basedir}/
-rm -f $RPM_BUILD_ROOT%{basedir}/CHANGELOG $RPM_BUILD_ROOT%{basedir}/INSTALL $RPM_BUILD_ROOT%{basedir}/UPGRADING $RPM_BUILD_ROOT%{basedir}/LICENSE $RPM_BUILD_ROOT%{basedir}/README
+cp -a * %{buildroot}%{basedir}/
+rm -f %{buildroot}%{basedir}/CHANGELOG %{buildroot}%{basedir}/INSTALL %{buildroot}%{basedir}/UPGRADING %{buildroot}%{basedir}/LICENSE %{buildroot}%{basedir}/README
 
 cat <<EOF > %{mod_conf}
 
@@ -131,7 +126,7 @@ install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{mod
 %_postun_webapp
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
