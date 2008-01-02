@@ -26,6 +26,7 @@ Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-%{bet
 Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-dep.tar.gz
 %endif
 Epoch:		1
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
 #BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
