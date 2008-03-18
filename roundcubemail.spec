@@ -1,30 +1,29 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define	name		roundcubemail
-%define	version		0.1
-%define beta		rc2
-%if beta
-%define	release		%mkrel 0.%beta.1
+%define rel		1
+%define beta		0
+%if %beta
+%define	release		%mkrel 0.%beta.%rel
+%define distname	%name-%version-%beta-dep.tar.gz
+%define dirname		%name-%version-%beta-dep
 %else
-%define release		%mkrel 1
+%define release		%mkrel %rel
+%define distname	%name-%version-dep.tar.gz
+%define dirname		%name-%version-dep
 %endif
 
 Summary:	A PHP-based webmail server
 URL:		http://www.roundcube.net/
-Name:		%{name}
-Version:	%{version}
+Name:		roundcubemail
+Version:	0.1
 Release:	%{release}           
 Group:		System/Servers
 License:	GPLv2
 # Use the -dep tarballs. These use system copies of the PHP stuff
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
-%if %beta
-Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-%{beta}-dep.tar.gz
-%else
-Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-dep.tar.gz
-%endif
+Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
@@ -38,8 +37,9 @@ Requires:	php-session
 Requires:	php-pear-DB
 Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
-Requires(post):   rpm-helper
-Requires(postun): rpm-helper
+
+Requires(post):		rpm-helper
+Requires(postun):	rpm-helper
 
 %description
 RoundCube Webmail is a browser-based multilingual IMAP client with an 
@@ -50,23 +50,19 @@ Webmail is written in PHP and requires a MySQL or PostgreSQL database.
 The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
-%if %beta
-%setup -q -n %{name}-%{version}-%{beta}-dep
-%else
-%setup -q -n %{name}-%{version}-dep
-%endif
+%setup -q -n %{dirname}
 
 %build
 
 %install
 rm -rf %{buildroot}
 # tell it that we're moving the configuration files
-perl -pi -e 's,config/main.inc.php,%{_sysconfdir}/%{name}/main.inc.php,g' program/include/main.inc
-perl -pi -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/include/main.inc
+sed -i -e 's,config/main.inc.php,%{_sysconfdir}/%{name}/main.inc.php,g' program/include/main.inc
+sed -i -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/include/main.inc
 # use systemwide log dir
-perl -pi -e 's,logs/,%{_logdir}/%{name}/,g' config/main.inc.php.dist
+sed -i -e 's,logs/,%{_logdir}/%{name}/,g' config/main.inc.php.dist
 # and temp dir
-perl -pi -e 's,temp/,/tmp/,g' config/main.inc.php.dist
+sed -i -e 's,temp/,/tmp/,g' config/main.inc.php.dist
 mkdir -p %{buildroot}%{basedir}
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}
 mkdir -p %{buildroot}%{_logdir}/%{name}
@@ -75,6 +71,7 @@ cp -a config/main.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/main.inc.php
 rm -rf config
 rm -rf temp
 rm -rf logs
+rm -rf installer
 cp -a * %{buildroot}%{basedir}/
 rm -f %{buildroot}%{basedir}/CHANGELOG %{buildroot}%{basedir}/INSTALL %{buildroot}%{basedir}/UPGRADING %{buildroot}%{basedir}/LICENSE %{buildroot}%{basedir}/README
 
@@ -120,10 +117,10 @@ mkdir -p %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
 install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
 
 %post
-%_post_webapp
+%{_post_webapp}
 
 %postun
-%_postun_webapp
+%{_postun_webapp}
 
 %clean
 rm -rf %{buildroot}
@@ -139,3 +136,4 @@ rm -rf %{buildroot}
 %defattr(0640,root,www)
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
+
