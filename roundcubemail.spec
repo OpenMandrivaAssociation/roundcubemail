@@ -2,7 +2,7 @@
 %define basedir 	/var/www/roundcubemail
 
 %define rel		1
-%define beta		0
+%define beta		beta
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
 %define distname	%name-%version-%beta-dep.tar.gz
@@ -16,7 +16,7 @@
 Summary:	A PHP-based webmail server
 URL:		http://www.roundcube.net/
 Name:		roundcubemail
-Version:	0.1.1
+Version:	0.2
 Release:	%{release}           
 Group:		System/Servers
 License:	GPLv2
