@@ -1,7 +1,7 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define rel		1
+%define rel		2
 %define beta		beta
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -37,6 +37,9 @@ Requires:	php-session
 Requires:	php-pear-DB
 Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
+# Most people will probably use mysql, but you can use sqlite or
+# pgsql, so not a hard require - AdamW 2008/10
+Suggests:	php-pear-MDB2_Driver_mysql
 
 Requires(post):		rpm-helper
 Requires(postun):	rpm-helper
@@ -57,8 +60,7 @@ The user interface is fully skinnable using XHTML and CSS 2.
 %install
 rm -rf %{buildroot}
 # tell it that we're moving the configuration files
-sed -i -e 's,config/main.inc.php,%{_sysconfdir}/%{name}/main.inc.php,g' program/include/main.inc
-sed -i -e 's,config/db.inc.php,%{_sysconfdir}/%{name}/db.inc.php,g' program/include/main.inc
+sed -i -e "s,INSTALL_PATH . 'config','%{_sysconfdir}/%{name}',g" program/include/iniset.php
 # use systemwide log dir
 sed -i -e 's,logs/,%{_logdir}/%{name}/,g' config/main.inc.php.dist
 # and temp dir
@@ -131,9 +133,9 @@ rm -rf %{buildroot}
 %{basedir}
 %{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
 %dir %{_sysconfdir}/%{name}
-%defattr(0775,root,www)
+%defattr(0775,root,root)
 %{_logdir}/%{name}
-%defattr(0640,root,www)
+%defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
 
