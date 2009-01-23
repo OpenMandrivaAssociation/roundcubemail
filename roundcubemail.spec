@@ -1,16 +1,16 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define rel		2
-%define beta		beta
+%define rel		1
+%define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
 %define distname	%name-%version-%beta-dep.tar.gz
 %define dirname		%name-%version-%beta-dep
 %else
 %define release		%mkrel %rel
-%define distname	%name-%version-dep.tar.gz
-%define dirname		%name-%version-dep
+%define distname	%name-%version-stable-dep.tar.gz
+%define dirname		%name-%version-stable-dep
 %endif
 
 Summary:	A PHP-based webmail server
@@ -73,7 +73,6 @@ cp -a config/main.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/main.inc.php
 rm -rf config
 rm -rf temp
 rm -rf logs
-rm -rf installer
 cp -a * %{buildroot}%{basedir}/
 rm -f %{buildroot}%{basedir}/CHANGELOG %{buildroot}%{basedir}/INSTALL %{buildroot}%{basedir}/UPGRADING %{buildroot}%{basedir}/LICENSE %{buildroot}%{basedir}/README
 
@@ -129,7 +128,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-, root, root)
-%doc %attr(-  root  root) CHANGELOG README README.urpmi
+%doc %attr(-  root  root) CHANGELOG README README.urpmi UPGRADING
 %{basedir}
 %{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
 %dir %{_sysconfdir}/%{name}
