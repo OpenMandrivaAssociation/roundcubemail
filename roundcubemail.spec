@@ -1,7 +1,7 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define rel		1
+%define rel		2
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -24,6 +24,9 @@ License:	GPLv2
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
 Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
+# http://trac.roundcube.net/changeset/2245?format=diff&new=2245
+# Fixes a XSS security vulnerability CVE-2009-0413 - AdamW 2009/02
+Patch0:		changeset_r2245.diff
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
@@ -54,6 +57,7 @@ The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %setup -q -n %{dirname}
+%patch0 -p2
 
 %build
 
