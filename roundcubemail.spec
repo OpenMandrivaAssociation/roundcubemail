@@ -1,7 +1,7 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define rel		2
+%define rel		1
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -9,14 +9,14 @@
 %define dirname		%name-%version-%beta-dep
 %else
 %define release		%mkrel %rel
-%define distname	%name-%version-stable-dep.tar.gz
-%define dirname		%name-%version-stable-dep
+%define distname	%name-%version-dep.tar.gz
+%define dirname		%name-%version-dep
 %endif
 
 Summary:	A PHP-based webmail server
 URL:		http://www.roundcube.net/
 Name:		roundcubemail
-Version:	0.2
+Version:	0.2.1
 Release:	%{release}           
 Group:		System/Servers
 License:	GPLv2
@@ -24,10 +24,6 @@ License:	GPLv2
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
 Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
-# http://trac.roundcube.net/changeset/2245?format=diff&new=2245
-# (rediffed)
-# Fixes a XSS security vulnerability CVE-2009-0413 - AdamW 2009/02
-Patch0:		roundcubemail-0.2-CVE-2009-0413.patch
 Epoch:		1
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
@@ -58,7 +54,6 @@ The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %setup -q -n %{dirname}
-%patch0 -p1
 
 %build
 
