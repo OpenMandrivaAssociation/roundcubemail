@@ -9,14 +9,14 @@
 %define dirname		%name-%version-%beta-dep
 %else
 %define release		%mkrel %rel
-%define distname	%name-%version-dep.tar.gz
-%define dirname		%name-%version-dep
+%define distname	%name-%version-stable-dep.tar.gz
+%define dirname		%name-%version-stable-dep
 %endif
 
 Summary:	A PHP-based webmail server
 URL:		http://www.roundcube.net/
 Name:		roundcubemail
-Version:	0.2.2
+Version:	0.3
 Release:	%{release}           
 Group:		System/Servers
 License:	GPLv2
@@ -29,11 +29,15 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildArch:	noarch
 #BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
+Requires:	php-gd
 Requires:	php-gettext
 Requires:	php-iconv
 Requires:	php-mbstring
+Requires:	php-mcrypt
 Requires:	php-openssl
+Requires:	php-pspell
 Requires:	php-session
+Requires:	php-pear-Auth_SASL
 Requires:	php-pear-DB
 Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
