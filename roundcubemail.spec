@@ -9,14 +9,14 @@
 %define dirname		%name-%version-%beta-dep
 %else
 %define release		%mkrel %rel
-%define distname	%name-%version-stable-dep.tar.gz
-%define dirname		%name-%version-stable-dep
+%define distname	%name-%version-dep.tar.gz
+%define dirname		%name-%version-dep
 %endif
 
 Summary:	A PHP-based webmail server
 URL:		http://www.roundcube.net/
 Name:		roundcubemail
-Version:	0.3
+Version:	0.3.1
 Release:	%{release}           
 Group:		System/Servers
 License:	GPLv2
