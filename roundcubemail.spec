@@ -1,7 +1,7 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define rel		1
+%define rel		2
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -41,6 +41,8 @@ Requires:	php-pear-Auth_SASL
 Requires:	php-pear-DB
 Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
+Requires:	php-pear-Net_LDAP2
+Requires:	php-pear-MDB2
 # Most people will probably use mysql, but you can use sqlite or
 # pgsql, so not a hard require - AdamW 2008/10
 Suggests:	php-pear-MDB2_Driver_mysql
