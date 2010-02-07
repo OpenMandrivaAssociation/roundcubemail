@@ -1,4 +1,3 @@
-%define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
 %define rel		3
@@ -84,17 +83,6 @@ rm -rf logs
 cp -a * %{buildroot}%{basedir}/
 rm -f %{buildroot}%{basedir}/CHANGELOG %{buildroot}%{basedir}/INSTALL %{buildroot}%{basedir}/UPGRADING %{buildroot}%{basedir}/LICENSE %{buildroot}%{basedir}/README
 
-cat <<EOF > %{mod_conf}
-
-Alias /%{name} %{basedir}
-
-<Directory %{basedir}>
-
-    Allow from all
-
-</Directory>
-
-EOF
 
 cat <<EOF > README.urpmi
 
@@ -122,8 +110,15 @@ database, and set db.inc.php appropriately.
 
 EOF
 
-mkdir -p %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
-install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
+mkdir -p %{buildroot}%{_webappconfdir}
+cat >%{buildroot}{_webappconfdir}/%{name}.conf <<EOF
+Alias /%{name} %{basedir}
+
+<Directory %{basedir}>
+    Order allow,deny
+    Allow from all
+</Directory>
+EOF
 
 %post
 %if %mdkversion < 201010
@@ -142,10 +137,10 @@ rm -rf %{buildroot}
 %defattr(-, root, root)
 %doc %attr(-  root  root) CHANGELOG README README.urpmi UPGRADING
 %{basedir}
-%{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
 %dir %{_sysconfdir}/%{name}
 %defattr(0775,root,root)
 %{_logdir}/%{name}
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
+%config(noreplace) %{_webappconfdir}/%{name}.conf
