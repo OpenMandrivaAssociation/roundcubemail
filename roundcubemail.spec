@@ -121,6 +121,11 @@ Alias /%{name} %{_datadir}/%{name}
     Order allow,deny
     Allow from all
 </Directory>
+
+<Directory %{_datadir}/%{name}/SQL>
+    Order deny,allow
+    Deny from all
+</Directory>
 EOF
 
 %post
