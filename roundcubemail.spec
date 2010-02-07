@@ -1,7 +1,7 @@
 %define mod_conf 	74_roundcubemail.conf
 %define basedir 	/var/www/roundcubemail
 
-%define rel		2
+%define rel		3
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -13,11 +13,11 @@
 %define dirname		%name-%version-dep
 %endif
 
-Summary:	A PHP-based webmail server
-URL:		http://www.roundcube.net/
 Name:		roundcubemail
 Version:	0.3.1
 Release:	%{release}           
+Summary:	A PHP-based webmail server
+URL:		http://www.roundcube.net/
 Group:		System/Servers
 License:	GPLv2
 # Use the -dep tarballs. These use system copies of the PHP stuff
@@ -25,8 +25,6 @@ License:	GPLv2
 # - AdamW 2007/07
 Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
 Epoch:		1
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-BuildArch:	noarch
 #BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
 Requires:	php-gd
@@ -47,8 +45,12 @@ Requires:	php-pear-MDB2
 # pgsql, so not a hard require - AdamW 2008/10
 Suggests:	php-pear-MDB2_Driver_mysql
 
+%if %mdkversion < 201010
 Requires(post):		rpm-helper
 Requires(postun):	rpm-helper
+%endif
+BuildArch:	noarch
+BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 RoundCube Webmail is a browser-based multilingual IMAP client with an 
@@ -124,10 +126,14 @@ mkdir -p %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
 install -m0644 %{mod_conf} %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/%{mod_conf}
 
 %post
-%{_post_webapp}
+%if %mdkversion < 201010
+%_post_webapp
+%endif
 
 %postun
-%{_postun_webapp}
+%if %mdkversion < 201010
+%_postun_webapp
+%endif
 
 %clean
 rm -rf %{buildroot}
@@ -143,4 +149,3 @@ rm -rf %{buildroot}
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
-
