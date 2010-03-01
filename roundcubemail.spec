@@ -1,4 +1,4 @@
-%define rel		3
+%define rel		4
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -12,7 +12,7 @@
 
 Name:		roundcubemail
 Version:	0.3.1
-Release:	%{release}           
+Release:	%{release}
 Summary:	A PHP-based webmail server
 Group:		System/Servers
 License:	GPLv2
@@ -21,6 +21,7 @@ License:	GPLv2
 # - AdamW 2007/07
 URL:		http://www.roundcube.net/
 Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
+Patch0:		roundcubemail-0.3.1-CVE-2010-0464.patch
 Epoch:		1
 #BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
@@ -59,6 +60,7 @@ The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %setup -q -n %{dirname}
+%patch0 -p0
 
 %build
 
