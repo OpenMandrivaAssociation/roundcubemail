@@ -1,5 +1,5 @@
-%define rel		4
-%define beta		0
+%define rel		1
+%define beta		beta
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
 %define distname	%name-%version-%beta-dep.tar.gz
@@ -11,7 +11,7 @@
 %endif
 
 Name:		roundcubemail
-Version:	0.3.1
+Version:	0.4
 Release:	%{release}
 Summary:	A PHP-based webmail server
 Group:		System/Servers
@@ -128,6 +128,8 @@ Alias /%{name} %{_datadir}/%{name}
     Order deny,allow
     Deny from all
 </Directory>
+
+php_value suhosin.session.encrypt Off
 EOF
 
 %post
