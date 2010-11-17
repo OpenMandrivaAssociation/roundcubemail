@@ -1,5 +1,5 @@
 %define rel		1
-%define beta		beta
+%define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
 %define distname	%name-%version-%beta-dep.tar.gz
@@ -11,7 +11,7 @@
 %endif
 
 Name:		roundcubemail
-Version:	0.4
+Version:	0.4.2
 Release:	%{release}
 Summary:	A PHP-based webmail server
 Group:		System/Servers
