@@ -11,7 +11,7 @@
 %endif
 
 Name:		roundcubemail
-Version:	0.4.2
+Version:	0.5
 Release:	%{release}
 Summary:	A PHP-based webmail server
 Group:		System/Servers
@@ -21,7 +21,6 @@ License:	GPLv2
 # - AdamW 2007/07
 URL:		http://www.roundcube.net/
 Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
-Patch0:		roundcubemail-0.3.1-CVE-2010-0464.patch
 Epoch:		1
 #BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
@@ -39,6 +38,11 @@ Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
 Requires:	php-pear-Net_LDAP2
 Requires:	php-pear-MDB2
+Requires:	php-pear-Net_IDNA2
+# The installer suggests the use of these, but they're not
+# required - AdamW 2011/01
+Suggests:	php-fileinfo
+Suggests:	php-intl
 # Most people will probably use mysql, but you can use sqlite or
 # pgsql, so not a hard require - AdamW 2008/10
 Suggests:	php-pear-MDB2_Driver_mysql
@@ -60,16 +64,17 @@ The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %setup -q -n %{dirname}
-%patch0 -p0
 
 %build
 
 %install
 rm -rf %{buildroot}
 # tell it that we're moving the configuration files
-sed -i \
-    -e "s,INSTALL_PATH . 'config','%{_sysconfdir}/%{name}',g" \
-    program/include/iniset.php
+for i in installer/index.php program/include/iniset.php; do \
+	sed -i \
+		-e "s,INSTALL_PATH . 'config','%{_sysconfdir}/%{name}',g" \
+		$i; \
+done
 # use systemwide log dir and temp dir
 sed -i \
     -e 's,logs/,%{_logdir}/%{name}/,g' \
@@ -79,7 +84,9 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}
 mkdir -p %{buildroot}%{_logdir}/%{name}
 cp -a config/db.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/db.inc.php
+cp -a config/db.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/db.inc.php.dist
 cp -a config/main.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/main.inc.php
+cp -a config/main.inc.php.dist %{buildroot}%{_sysconfdir}/%{name}/main.inc.php.dist
 rm -rf config
 rm -rf temp
 rm -rf logs
@@ -112,7 +119,11 @@ an appropriate database location and user; in the most simple
 configuration, you would create a new user and database both named
 'roundcubemail' on a MySQL server running on the same machine, give
 the roundcubemail user full read/write access to the roundcubemail
-database, and set db.inc.php appropriately.
+database, and set db.inc.php appropriately. Roundcubemail ships with
+an installer which can help you do all this, but it is disabled by
+default for security reasons. You can enable it in main.inc.php by
+setting the 'enable_installer' variable to 'true'. Then browse to
+http://server/roundcubemail/installer to use the installer.
 EOF
 
 mkdir -p %{buildroot}%{_webappconfdir}
@@ -151,6 +162,10 @@ rm -rf %{buildroot}
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
 %{_logdir}/%{name}
+# these store the default values, the installer refers to them
+# no need to edit them so they're not tagged config - AdamW 2011/01
+%{_sysconfdir}/%{name}/db.inc.php.dist
+%{_sysconfdir}/%{name}/main.inc.php.dist
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
 %config(noreplace) %{_webappconfdir}/%{name}.conf
