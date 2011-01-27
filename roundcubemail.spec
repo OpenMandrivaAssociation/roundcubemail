@@ -1,4 +1,4 @@
-%define rel		1
+%define rel		2
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -33,7 +33,6 @@ Requires:	php-openssl
 Requires:	php-pspell
 Requires:	php-session
 Requires:	php-pear-Auth_SASL
-Requires:	php-pear-DB
 Requires:	php-pear-Mail_Mime
 Requires:	php-pear-Net_SMTP
 Requires:	php-pear-Net_LDAP2
