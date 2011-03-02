@@ -1,4 +1,4 @@
-%define rel		2
+%define rel		1
 %define beta		0
 %if %beta
 %define	release		%mkrel 0.%beta.%rel
@@ -11,7 +11,7 @@
 %endif
 
 Name:		roundcubemail
-Version:	0.5
+Version:	0.5.1
 Release:	%{release}
 Summary:	A PHP-based webmail server
 Group:		System/Servers
