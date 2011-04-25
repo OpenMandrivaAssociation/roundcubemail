@@ -11,7 +11,7 @@
 %endif
 
 Name:		roundcubemail
-Version:	0.5.1
+Version:	0.5.2
 Release:	%{release}
 Summary:	A PHP-based webmail server
 Group:		System/Servers
