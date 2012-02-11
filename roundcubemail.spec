@@ -1,28 +1,30 @@
-%define rel		1
-%define beta		0
-%if %beta
-%define	release		%mkrel 0.%beta.%rel
-%define distname	%name-%version-%beta-dep.tar.gz
-%define dirname		%name-%version-%beta-dep
+%if %mandriva_branch == Cooker
+# Cooker
+%define release %mkrel 1
 %else
-%define release		%mkrel %rel
-%define distname	%name-%version-dep.tar.gz
-%define dirname		%name-%version-dep
+# Old distros
+%define subrel 1
+%define release %mkrel 0
 %endif
 
-Name:		roundcubemail
-Version:	0.5.4
-Release:	%{release}
+%if %mdkversion >= 201200
+# rpmlint just sucks!!!
+%define _build_pkgcheck_set %{nil}
+%define _build_pkgcheck_srpm %{nil}
+%endif
+
 Summary:	A PHP-based webmail server
+Name:		roundcubemail
+Version:	0.7.1
+Release:	%{release}
 Group:		System/Servers
 License:	GPLv2
 # Use the -dep tarballs. These use system copies of the PHP stuff
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
 URL:		http://www.roundcube.net/
-Source0:	http://downloads.sourceforge.net/roundcubemail/%{distname}
+Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-dep.tar.gz
 Epoch:		1
-#BuildRequires:	apache-devel pcre-devel rpm-helper
 Requires:	apache-mod_php
 Requires:	php-gd
 Requires:	php-gettext
@@ -45,29 +47,32 @@ Suggests:	php-intl
 # Most people will probably use mysql, but you can use sqlite or
 # pgsql, so not a hard require - AdamW 2008/10
 Suggests:	php-pear-MDB2_Driver_mysql
-
 %if %mdkversion < 201010
 Requires(post):		rpm-helper
 Requires(postun):	rpm-helper
 %endif
 BuildArch:	noarch
+# rpm-build / rpm macros does not seem to require php-cli in cooker
+BuildRequires:	php-cli
 BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
-RoundCube Webmail is a browser-based multilingual IMAP client with an 
-application-like user interface. It provides full functionality you 
-expect from an e-mail client, including MIME support, address book, 
-folder manipulation, message searching and spell checking. RoundCube 
-Webmail is written in PHP and requires a MySQL or PostgreSQL database.
-The user interface is fully skinnable using XHTML and CSS 2.
+RoundCube Webmail is a browser-based multilingual IMAP client with an
+application-like user interface. It provides full functionality you expect
+from an e-mail client, including MIME support, address book, folder
+manipulation, message searching and spell checking. RoundCube Webmail is
+written in PHP and requires a MySQL or PostgreSQL database. The user
+interface is fully skinnable using XHTML and CSS 2.
 
 %prep
-%setup -q -n %{dirname}
+
+%setup -q -n %{name}-%{version}-dep
 
 %build
 
 %install
 rm -rf %{buildroot}
+
 # tell it that we're moving the configuration files
 for i in installer/index.php program/include/iniset.php; do \
 	sed -i \
