@@ -15,7 +15,7 @@
 
 Summary:	A PHP-based webmail server
 Name:		roundcubemail
-Version:	0.7.1
+Version:	0.7.2
 Release:	%{release}
 Group:		System/Servers
 License:	GPLv2
