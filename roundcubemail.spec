@@ -1,10 +1,10 @@
 %if %mandriva_branch == Cooker
 # Cooker
-%define release %mkrel 1
+%define release: 2
 %else
 # Old distros
 %define subrel 1
-%define release %mkrel 0
+%define release: 1
 %endif
 
 %if %mdkversion >= 201200
@@ -147,15 +147,7 @@ Alias /%{name} %{_datadir}/%{name}
 php_value suhosin.session.encrypt Off
 EOF
 
-%post
-%if %mdkversion < 201010
-%_post_webapp
-%endif
 
-%postun
-%if %mdkversion < 201010
-%_postun_webapp
-%endif
 
 %clean
 rm -rf %{buildroot}
