@@ -1,10 +1,10 @@
 %if %mandriva_branch == Cooker
 # Cooker
-%define release 3
+%define release 4
 %else
 # Old distros
 %define subrel 1
-%define release 2
+%define release 4
 %endif
 
 %if %mdkversion >= 201200
@@ -135,13 +135,11 @@ cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
 Alias /%{name} %{_datadir}/%{name}
 
 <Directory %{_datadir}/%{name}>
-    Order allow,deny
-    Allow from all
+   Require all granted
 </Directory>
 
 <Directory %{_datadir}/%{name}/SQL>
-    Order deny,allow
-    Deny from all
+    Require all denied
 </Directory>
 
 php_value suhosin.session.encrypt Off
