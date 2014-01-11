@@ -1,12 +1,3 @@
-%if %mandriva_branch == Cooker
-# Cooker
-%define release 4
-%else
-# Old distros
-%define subrel 1
-%define release 4
-%endif
-
 %if %mdkversion >= 201200
 # rpmlint just sucks!!!
 %define _build_pkgcheck_set %{nil}
@@ -15,15 +6,15 @@
 
 Summary:	A PHP-based webmail server
 Name:		roundcubemail
-Version:	0.7.2
-Release:	%{release}
+Version:	0.9.5
+Release:	1
 Group:		System/Servers
 License:	GPLv2
 # Use the -dep tarballs. These use system copies of the PHP stuff
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
 URL:		http://www.roundcube.net/
-Source0:	http://downloads.sourceforge.net/roundcubemail/%{name}-%{version}-dep.tar.gz
+Source0:	https://sourceforge.net/projects/roundcubemail/files/roundcubemail-dependent/0.9.5/roundcubemail-0.9.5-dep.tar.gz
 Epoch:		1
 Requires:	apache-mod_php
 Requires:	php-gd
@@ -47,14 +38,9 @@ Suggests:	php-intl
 # Most people will probably use mysql, but you can use sqlite or
 # pgsql, so not a hard require - AdamW 2008/10
 Suggests:	php-pear-MDB2_Driver_mysql
-%if %mdkversion < 201010
-Requires(post):		rpm-helper
-Requires(postun):	rpm-helper
-%endif
 BuildArch:	noarch
 # rpm-build / rpm macros does not seem to require php-cli in cooker
 BuildRequires:	php-cli
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 RoundCube Webmail is a browser-based multilingual IMAP client with an
@@ -71,7 +57,6 @@ interface is fully skinnable using XHTML and CSS 2.
 %build
 
 %install
-rm -rf %{buildroot}
 
 # tell it that we're moving the configuration files
 for i in installer/index.php program/include/iniset.php; do \
@@ -148,11 +133,9 @@ EOF
 
 
 %clean
-rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
-%doc CHANGELOG README README.urpmi UPGRADING
+%doc CHANGELOG README.urpmi UPGRADING
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
 %{_logdir}/%{name}
@@ -163,149 +146,4 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
 %config(noreplace) %{_webappconfdir}/%{name}.conf
-
-
-%changelog
-* Tue Apr 03 2012 Oden Eriksson <oeriksson@mandriva.com> 1:0.7.2-1mdv2012.0
-+ Revision: 789015
-- 0.7.2
-
-* Sat Feb 11 2012 Oden Eriksson <oeriksson@mandriva.com> 1:0.7.1-1
-+ Revision: 772794
-- 0.7.1
-
-* Thu Aug 25 2011 Oden Eriksson <oeriksson@mandriva.com> 1:0.5.4-1
-+ Revision: 697053
-- 0.5.4
-
-* Fri Jun 17 2011 Luis Daniel Lucio Quiroz <dlucio@mandriva.org> 1:0.5.3-1
-+ Revision: 685717
-- 0.5.3
-
-* Mon Apr 25 2011 Adam Williamson <awilliamson@mandriva.org> 1:0.5.2-1
-+ Revision: 659054
-- new release 0.5.2
-
-* Wed Mar 02 2011 Adam Williamson <awilliamson@mandriva.org> 1:0.5.1-1
-+ Revision: 641366
-- new release 0.5.1
-- drop php-pear-DB dep (superseded by MDB2)
-
-* Thu Jan 27 2011 Adam Williamson <awilliamson@mandriva.org> 1:0.5-1
-+ Revision: 633158
-- new release 0.5
-- update dependencies
-- package .dist files for the installer
-- drop the patch (merged upstream a while ago)
-
-* Wed Nov 17 2010 Oden Eriksson <oeriksson@mandriva.com> 1:0.4.2-1mdv2011.0
-+ Revision: 598346
-- 0.4.2
-
-  + Adam Williamson <awilliamson@mandriva.org>
-    - add required suhosin config option to the apache config file
-    - new release 0.4 beta
-
-* Mon Mar 01 2010 Oden Eriksson <oeriksson@mandriva.com> 1:0.3.1-4mdv2010.1
-+ Revision: 513034
-- P0: security fix for CVE-2010-0464 (fedora)
-
-* Sun Feb 07 2010 Guillaume Rousse <guillomovitch@mandriva.org> 1:0.3.1-3mdv2010.1
-+ Revision: 501716
-- deny acces to the SQL directory
-- install under %%{_datadir} instead of %%{_localstatedir}
-- no need to version apache configuration file
-- rely on filetrigger for reloading apache configuration begining with 2010.1, rpm-helper macros otherwise
-
-* Thu Jan 21 2010 Adam Williamson <awilliamson@mandriva.org> 1:0.3.1-2mdv2010.1
-+ Revision: 494702
-- add some more explicit php-pear deps
-
-* Sun Nov 08 2009 Frederik Himpe <fhimpe@mandriva.org> 1:0.3.1-1mdv2010.1
-+ Revision: 463124
-- Update to new version 0.3.1
-
-* Sat Sep 26 2009 Frederik Himpe <fhimpe@mandriva.org> 1:0.3-1mdv2010.0
-+ Revision: 449287
-- Update to new version 0.3
-- Requires php-gd, php-pspell and php-mcrypt (from Debian)
-- Requires php-pear-Auth_SASL (used by SIEVE client)
-
-* Mon May 25 2009 Frederik Himpe <fhimpe@mandriva.org> 1:0.2.2-1mdv2010.0
-+ Revision: 379650
-- update to new version 0.2.2
-
-* Mon Mar 16 2009 Frederik Himpe <fhimpe@mandriva.org> 1:0.2.1-1mdv2009.1
-+ Revision: 355585
-- Update to new version 0.2.1
-- Remove patch integrated upstream
-
-* Wed Feb 11 2009 Adam Williamson <awilliamson@mandriva.org> 1:0.2-2mdv2009.1
-+ Revision: 339327
-- rediff the patch
-- add upstream patch to fix CVE-2009-0413
-
-* Fri Jan 23 2009 Adam Williamson <awilliamson@mandriva.org> 1:0.2-1mdv2009.1
-+ Revision: 332693
-- package installer/ (needed for the upgrade script) and UPGRADING doc file
-- adjust the conditionals a bit for the filename
-- new release 0.2 final
-
-* Wed Oct 22 2008 Adam Williamson <awilliamson@mandriva.org> 1:0.2-0.beta.2mdv2009.1
-+ Revision: 296537
-- don't use the 'www' group (which apparently I invented...)
-- fix the config file relocation for changed upstream implementation
-- suggest php-pear-MDB2_Driver_mysql
-
-* Tue Oct 21 2008 Adam Williamson <awilliamson@mandriva.org> 1:0.2-0.beta.1mdv2009.1
-+ Revision: 296313
-- update to new version 0.2-beta
-
-* Mon May 12 2008 Adam Williamson <awilliamson@mandriva.org> 1:0.1.1-1mdv2009.0
-+ Revision: 206481
-- new release 0.1.1
-
-* Tue Mar 18 2008 Adam Williamson <awilliamson@mandriva.org> 1:0.1-1mdv2008.1
-+ Revision: 188649
-- don't package the installer
-- new release 0.1 final
-- prettify pre-release conditionals
-- clean spec a little
-
-  + Olivier Blin <blino@mandriva.org>
-    - restore BuildRoot
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Fri Nov 09 2007 Adam Williamson <awilliamson@mandriva.org> 1:0.1-0.rc2.1mdv2008.1
-+ Revision: 107158
-- new release 0.1rc2
-
-* Thu Jul 26 2007 Adam Williamson <awilliamson@mandriva.org> 1:0.1-0.rc1.4mdv2008.0
-+ Revision: 55688
-- correct tarball name
-- update requirements to pull in all the necessary PHP stuff
-- use the new 'pure GPL' tarball which doesn't include its own copies of various PHP libraries
-- update license
-- update description
-- add some comments
-
-* Sun Jun 17 2007 Adam Williamson <awilliamson@mandriva.org> 1:0.1-0.rc1.3mdv2008.0
-+ Revision: 40586
-- substantial cleanup following webapp policy
-
-* Tue May 22 2007 Adam Williamson <awilliamson@mandriva.org> 1:0.1-0.rc1.2mdv2008.0
-+ Revision: 29868
-- don't wipe temp dir prior to install
-
-* Tue May 22 2007 Adam Williamson <awilliamson@mandriva.org> 1:0.1-0.rc1.1mdv2008.0
-+ Revision: 29856
-- 0.1 rc1
-- big spec clean based on squirrelmail spec
-
-
-* Sat Feb 17 2007 Emmanuel Andry <eandry@mandriva.org> 0.1beta2-1mdv2007.0
-+ Revision: 122166
-- Import roundcubemail
 
