@@ -7,7 +7,7 @@
 Summary:	A PHP-based webmail server
 Name:		roundcubemail
 Version:	0.9.5
-Release:	1
+Release:	2
 Group:		System/Servers
 License:	GPLv2
 # Use the -dep tarballs. These use system copies of the PHP stuff
