@@ -6,15 +6,15 @@
 
 Summary:	A PHP-based webmail server
 Name:		roundcubemail
-Version:	0.9.5
-Release:	2
+Version:	1.0.5
+Release:	1
 Group:		System/Servers
 License:	GPLv2
 # Use the -dep tarballs. These use system copies of the PHP stuff
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
 URL:		http://www.roundcube.net/
-Source0:	https://sourceforge.net/projects/roundcubemail/files/roundcubemail-dependent/0.9.5/roundcubemail-0.9.5-dep.tar.gz
+Source0:	http://downloads.sourceforge.net/roundcubemail/roundcubemail-1.0.5-dep.tar.gz
 Epoch:		1
 Requires:	apache-mod_php
 Requires:	php-gd
@@ -146,4 +146,3 @@ EOF
 %config(noreplace) %{_sysconfdir}/%{name}/db.inc.php
 %config(noreplace) %{_sysconfdir}/%{name}/main.inc.php
 %config(noreplace) %{_webappconfdir}/%{name}.conf
-
