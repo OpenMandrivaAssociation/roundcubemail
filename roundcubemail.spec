@@ -47,7 +47,6 @@ Requires:	php-pear-MDB2
 Requires:	php-pear-Net_IDNA2
 Requires(pre):	php-pear >= 1.9.0
 Requires:	php-xml
-Requires:	iRony
 Requires:	php-pear-Crypt_GPG
 # The installer suggests the use of these, but they're not
 # required - AdamW 2011/01
