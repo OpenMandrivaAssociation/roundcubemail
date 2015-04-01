@@ -23,6 +23,7 @@ URL:		http://www.roundcube.net/
 Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Source1:        roundcubemail.conf
 Source2:	roundcubemail.logrotate
+Source100:	roundcubemail.rpmlintrc
 # Elegantly handle removal of moxieplayer Flash binary in tinymce
 # media plugin (see "Drop precompiled flash" in %%prep)
 Patch0:		roundcubemail-1.1.1-no_swf.patch
