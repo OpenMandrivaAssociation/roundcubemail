@@ -11,7 +11,7 @@
 %global roundcube_lib %{_localstatedir}/lib/roundcubemail
 
 Name:		roundcubemail
-Version:	1.1.3
+Version:	1.4.10
 Release:	1
 Summary:	Round Cube Webmail is a browser-based multilingual IMAP client
 Group:		System/Servers
@@ -20,7 +20,8 @@ License:	GPLv3
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
 URL:		http://www.roundcube.net/
-Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source0:	https://github.com/roundcube/roundcubemail/releases/download/%{version}/%{name}-%{version}-complete.tar.gz
+
 Source1:        roundcubemail.conf
 Source2:	roundcubemail.logrotate
 Source100:	roundcubemail.rpmlintrc
