@@ -25,9 +25,7 @@ Source0:	https://github.com/roundcube/roundcubemail/releases/download/%{version}
 Source1:        roundcubemail.conf
 Source2:	roundcubemail.logrotate
 Source100:	roundcubemail.rpmlintrc
-# Elegantly handle removal of moxieplayer Flash binary in tinymce
-# media plugin (see "Drop precompiled flash" in %%prep)
-Patch0:		roundcubemail-1.1.1-no_swf.patch
+
 Epoch:		1
 Requires:	apache-mod_php
 Requires:	php-gd
@@ -68,7 +66,6 @@ The user interface is fully skinnable using XHTML and CSS 2.
 
 %prep
 %setup -q
-%patch0 -p1
 
 # remove any reference to sqlite in config file so people don't mistakely
 # assume it works
