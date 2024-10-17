@@ -19,7 +19,7 @@ License:	GPLv3
 # Use the -dep tarballs. These use system copies of the PHP stuff
 # rather than including them, which is better for our purposes.
 # - AdamW 2007/07
-URL:		http://www.roundcube.net/
+URL:		https://www.roundcube.net/
 Source0:	https://github.com/roundcube/roundcubemail/releases/download/%{version}/%{name}-%{version}-complete.tar.gz
 
 Source1:        roundcubemail.conf
